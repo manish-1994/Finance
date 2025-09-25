@@ -2,260 +2,38 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <title>Finance Manager</title>
+  <title>Login — Finance Manager</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link rel="stylesheet" href="{{ url_for(filename='style.css') }}">
+  <style>
+    body{ min-height:100vh; display:grid; place-items:center; background:#0b1220; }
+    .login-card{ width:100%; max-width:380px; background:#0f172a; border:1px solid #273244; border-radius:.75rem; box-shadow:0 10px 30px rgba(0,0,0,.45); }
+    .login-card .card-body{ padding:1.5rem; }
+    .login-card h1{ font-size:1.25rem; color:#e7ecf3; }
+    .form-control{ background:#0b1220; color:#e7ecf3; border-color:#273244; }
+    .form-control::placeholder{ color:#9fb2c8; }
+    .btn-dark{ width:100%; }
+    .error{ color:#fca5a5; margin-top:.5rem; }
+  </style>
 </head>
 <body>
-  <nav class="navbar navbar-expand-lg navbar-dark brand-gradient">
-    <div class="container">
-      <a class="navbar-brand fw-semibold" href="/">
-        <i class="bi bi-wallet2 me-2"></i>Finance Manager
-      </a>
-      <div class="d-flex">
-        <a href="{{ url_for('logout') }}" class="btn btn-outline-light ms-2">Logout</a>
+  <div class="card login-card">
+    <div class="card-body">
+      <h1 class="mb-3">Finance Manager</h1>
+      <form method="POST">
+        <div class="mb-3">
+          <label class="form-label">Username</label>
+          <input type="text" name="username" class="form-control" placeholder="admin" required>
         </div>
-      <div class="ms-auto">
-        <a href="{{ url_for('export_expenses') }}" class="btn btn-outline-success btn-sm">
-          <i class="bi bi-file-earmark-excel"></i>
-          <span class="ms-1 d-none d-sm-inline">Export Excel</span>
-        </a>
-      </div>
+        <div class="mb-3">
+          <label class="form-label">Password</label>
+          <input type="password" name="password" class="form-control" placeholder="pass123" required>
+        </div>
+        <button type="submit" class="btn btn-dark">Login</button>
+      </form>
+      {% if error %}<div class="error">{{ error }}</div>{% endif %}
     </div>
-  </nav>
-
-  <main class="container my-5">
-
-    <!-- Wallet Manager -->
-    <div class="card card-elevated mb-4">
-      <div class="card-body">
-        <div class="d-flex align-items-center justify-content-between mb-3">
-          <h5 class="card-title mb-0">Wallets</h5>
-          <form action="{{ url_for('add_wallet') }}" method="POST" class="d-flex gap-2">
-            <input type="text" name="name" class="form-control form-control-sm" placeholder="New wallet name">
-            <div class="input-group input-group-sm" style="width: 160px;">
-              <span class="input-group-text">₹</span>
-              <input type="number" step="0.01" name="balance" class="form-control" placeholder="0.00">
-            </div>
-            <button class="btn btn-dark btn-sm" type="submit">
-              <i class="bi bi-plus-circle me-1"></i>Add Wallet
-            </button>
-          </form>
-        </div>
-
-        <div class="table-responsive">
-          <table class="table align-middle">
-            <thead class="table-light">
-              <tr>
-                <th>Name</th>
-                <th class="text-end">Balance</th>
-                <th class="text-center">Primary</th>
-                <th class="text-end">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {% for w in wallets %}
-              <tr>
-                <td>
-                  <form action="{{ url_for('update_wallet', id=w.id) }}" method="POST" class="d-flex gap-2">
-                    <input type="text" name="name" class="form-control form-control-sm" value="{{ w.name }}">
-                    <div class="input-group input-group-sm" style="width: 160px;">
-                      <span class="input-group-text">₹</span>
-                      <input type="number" step="0.01" name="balance" class="form-control" value="{{ '%.2f'|format(w.balance or 0) }}">
-                    </div>
-                    <button class="btn btn-outline-secondary btn-sm" type="submit">Update</button>
-                  </form>
-                </td>
-                <td class="text-end fw-semibold amount">₹{{ '%.2f'|format(w.balance or 0) }}</td>
-                <td class="text-center">
-                  {% if w.is_primary %}
-                    <span class="badge rounded-pill text-bg-success">Primary</span>
-                  {% else %}
-                    <form action="{{ url_for('set_primary', id=w.id) }}" method="POST">
-                      <button type="submit" class="btn btn-outline-success btn-sm">Make Primary</button>
-                    </form>
-                  {% endif %}
-                </td>
-                <td class="text-end">
-                  <form action="{{ url_for('delete_wallet', id=w.id) }}" method="POST" class="d-inline" onsubmit="return confirm('Delete this wallet?');">
-                    <button class="btn btn-outline-danger btn-sm" type="submit">
-                      <i class="bi bi-trash"></i>
-                    </button>
-                  </form>
-                </td>
-              </tr>
-              {% endfor %}
-            </tbody>
-            <tfoot>
-              <tr>
-                <th>Total Balance</th>
-                <th class="text-end amount">₹{{ '%.2f'|format(remaining) }}</th>
-                <th colspan="2"></th>
-              </tr>
-            </tfoot>
-          </table>
-        </div>
-      </div>
-    </div>
-
-    <div class="row g-4">
-      <!-- Add Expense -->
-      <div class="col-lg-5">
-        <div class="card card-elevated">
-          <div class="card-body">
-            <h5 class="card-title mb-3">Add Expense</h5>
-            <form action="{{ url_for('add_expense') }}" method="POST" class="row g-3">
-              <div class="col-12">
-                <label class="form-label">Description</label>
-                <input type="text" name="description" class="form-control" placeholder="e.g. Lunch with client" required>
-              </div>
-
-              <div class="col-6">
-                <label class="form-label">Amount</label>
-                <div class="input-group">
-                  <span class="input-group-text">₹</span>
-                  <input type="number" step="0.01" name="amount" class="form-control" placeholder="0.00" required>
-                </div>
-              </div>
-
-              <div class="col-6">
-                <label class="form-label">Category</label>
-                <select name="category" class="form-select" required>
-                  <option value="Food">Food</option>
-                  <option value="Travel">Travel</option>
-                  <option value="Bills">Bills</option>
-                  <option value="Shopping">Shopping</option>
-                  <option value="Other">Other</option>
-                </select>
-              </div>
-
-              <div class="col-6">
-                <label class="form-label">Date</label>
-                <input type="date" name="date" class="form-control">
-              </div>
-
-              <div class="col-6">
-                <label class="form-label">Use Wallet</label>
-                <select name="wallet_id" class="form-select">
-                  {% for w in wallets %}
-                    <option value="{{ w.id }}" {% if w.id==primary_id %}selected{% endif %}>
-                      {{ w.name }} {% if w.is_primary %}(Primary){% endif %}
-                    </option>
-                  {% endfor %}
-                </select>
-              </div>
-
-              <div class="col-12 d-grid">
-                <button type="submit" class="btn btn-dark">
-                  <i class="bi bi-plus-circle me-2"></i>Add Expense
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-
-        <!-- Totals -->
-        <div class="card mt-4 card-elevated">
-          <div class="card-body d-flex align-items-center justify-content-between">
-            <div>
-              <div class="text-muted small"><span class="balance-label">Total Spent</span></div>
-              <div class="fs-5 fw-semibold amount">₹{{ '%.2f'|format(total) }}</div>
-            </div>
-            <div class="text-end">
-              <div class="text-muted small"><span class="balance-label">Remaining (All Wallets)</span></div>
-              <div class="fs-4 fw-bold amount {% if remaining < 0 %}text-danger{% else %}text-success{% endif %}">
-                ₹{{ '%.2f'|format(remaining) }}
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Expenses Table -->
-      <div class="col-lg-7">
-        <div class="card card-elevated">
-          <div class="card-body">
-            <div class="d-flex align-items-center justify-content-between mb-3">
-              <h5 class="card-title mb-0">Expenses</h5>
-              <form action="/" method="GET" class="d-none d-md-block">
-                <div class="input-group input-group-sm">
-                  <span class="input-group-text"><i class="bi bi-search"></i></span>
-                  <input type="search" name="q" class="form-control" placeholder="Search description or category">
-                </div>
-              </form>
-            </div>
-
-            <div class="table-responsive">
-              <table class="table align-middle table-hover">
-                <thead class="table-light">
-                  <tr>
-                    <th>Description</th>
-                    <th class="text-center">Category</th>
-                    <th class="text-center">Wallet</th>
-                    <th class="text-end">Amount</th>
-                    <th class="text-center">Date</th>
-                    <th class="text-end">Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {% for expense in expenses %}
-                  <tr>
-                    <td class="fw-medium">{{ expense.description }}</td>
-                    <td class="text-center">
-                      <span class="badge rounded-pill text-bg-secondary">{{ expense.category }}</span>
-                    </td>
-                    <td class="text-center">
-                      {% set wid = expense.wallet_id %}
-                      {{ wallet_map.get(wid, '—') }}
-                    </td>
-                    <td class="text-end amount">₹{{ expense.amount }}</td>
-                    <td class="text-center">
-                      {% if expense.date %}
-                        {{ expense.date.strftime('%b %d, %Y') }}
-                      {% endif %}
-                    </td>
-                    <td class="text-end">
-                      <a href="{{ url_for('edit_expense', id=expense.id) }}" class="btn btn-outline-secondary btn-sm me-1">
-                        <i class="bi bi-pencil-square"></i>
-                        <span class="ms-1 d-none d-sm-inline">Edit</span>
-                      </a>
-                      <form action="/delete/{{ expense.id }}" method="POST" class="d-inline" onsubmit="return confirm('Delete this expense?');">
-                        <button type="submit" class="btn btn-outline-danger btn-sm">
-                          <i class="bi bi-trash"></i>
-                          <span class="ms-1 d-none d-sm-inline">Delete</span>
-                        </button>
-                      </form>
-                    </td>
-                  </tr>
-                  {% else %}
-                  <tr>
-                    <td colspan="6" class="text-center text-muted py-4">
-                      <i class="bi bi-inbox fs-3 d-block mb-2"></i>
-                      No expenses yet. Add your first one above.
-                    </td>
-                  </tr>
-                  {% endfor %}
-                </tbody>
-              </table>
-            </div>
-
-            <div class="d-md-none mt-3">
-              <form action="/" method="GET">
-                <div class="input-group input-group-sm">
-                  <span class="input-group-text"><i class="bi bi-search"></i></span>
-                  <input type="search" name="q" class="form-control" placeholder="Search description or category">
-                </div>
-              </form>
-            </div>
-
-          </div>
-        </div>
-      </div>
-    </div>
-  </main>
-
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  </div>
 </body>
 </html>
