@@ -1,0 +1,237 @@
+/* =========================================================
+   Finance Manager • Theme
+   ========================================================= */
+:root{
+  /* Base colors (light) */
+  --text:#111827;
+  --text-muted:#6b7280;
+  --surface:#ffffff;
+  --surface-2:#f7f8fb;
+  --border:#e5e7eb;
+
+  /* Brand / accents */
+  --brand-start:#111827;          /* slate-900 */
+  --brand-end:#1f2937;            /* slate-800 */
+  --ring:#0ea5e9;                 /* sky-500 */
+
+  /* Shadows */
+  --shadow:0 6px 18px rgba(17,24,39,.06);
+  --shadow-hover:0 10px 24px rgba(17,24,39,.10);
+}
+
+/* Dark scheme tokens */
+@media (prefers-color-scheme: dark){
+  :root{
+    --text:#E7ECF3;
+    --text-muted:#9AA3B2;
+    --surface:#0f172a;            /* card bg */
+    --surface-2:#0b1220;          /* page bg */
+    --border:#273244;             /* outlines */
+
+    --brand-start:#0b1220;
+    --brand-end:#111827;
+    --ring:#38bdf8;
+
+    --shadow:0 6px 18px rgba(0,0,0,.55);
+    --shadow-hover:0 10px 24px rgba(0,0,0,.7);
+  }
+}
+
+/* =========================================================
+   Base
+   ========================================================= */
+html,body{ height:100%; }
+body{
+  background:var(--surface-2);
+  color:var(--text);
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+}
+::selection{ background:#bfdbfe; color:#111827; }
+*:focus:not(:focus-visible){ box-shadow:none !important; }
+
+.fw-medium{ font-weight:600; }          /* make names/descriptions pop */
+.amount{ font-variant-numeric: tabular-nums; color:inherit; }
+
+/* =========================================================
+   Navbar
+   ========================================================= */
+.brand-gradient{ background:linear-gradient(135deg,var(--brand-start),var(--brand-end)); }
+.navbar .navbar-brand{ letter-spacing:.2px; color:#F5F8FB !important; }
+.navbar .nav-link{ color:#E9EFF6 !important; opacity:.9; }
+.navbar .btn{ border-width:1.5px; }
+
+/* Force gradient in dark too */
+@media (prefers-color-scheme: dark){
+  .navbar{ background:linear-gradient(135deg,var(--brand-start),var(--brand-end)) !important; }
+}
+
+/* =========================================================
+   Cards & Sections
+   ========================================================= */
+.card-elevated{
+  border:1px solid var(--border);
+  background:var(--surface);
+  box-shadow:var(--shadow);
+  transition:transform .2s ease, box-shadow .2s ease;
+}
+.card-elevated:hover{ transform:translateY(-2px); box-shadow:var(--shadow-hover); }
+.card .card-title{ letter-spacing:.2px; color:var(--text); }
+
+/* =========================================================
+   Forms
+   ========================================================= */
+.form-label{ color:var(--text-muted); }
+.form-control,.form-select{
+  background:#fff;
+  color:var(--text);
+  border-color:var(--border);
+  transition:border-color .15s, box-shadow .15s, background-color .15s;
+}
+.input-group-text{
+  background:#f3f4f6;
+  color:var(--text-muted);
+  border-color:var(--border);
+}
+.form-control:focus,.form-select:focus{
+  border-color:var(--ring);
+  box-shadow:0 0 0 .2rem rgba(14,165,233,.25);
+}
+
+/* Dark form specifics for contrast */
+@media (prefers-color-scheme: dark){
+  .card, .card-body{ color:var(--text); }
+  .form-label{ color:#D8DFE8; }
+  .form-control,.form-select{
+    background:#0D1726;
+    color:#E7ECF3;
+    border-color:var(--border);
+  }
+  .form-control::placeholder{ color:#9FB2C8; opacity:1; }
+  .input-group-text{ background:#111B2A; color:#D8E2EE; }
+}
+
+/* =========================================================
+   Buttons
+   ========================================================= */
+.btn-dark{
+  background:#111827; border-color:#111827; color:#fff;
+  transition:transform .08s ease, box-shadow .2s ease, opacity .15s ease;
+}
+.btn-dark:hover{ box-shadow:0 8px 18px rgba(0,0,0,.15); transform:translateY(-1px); }
+
+.btn-outline-secondary,
+.btn-outline-danger,
+.btn-outline-success{ border-width:1.5px; }
+
+/* Edit */
+.btn-outline-secondary{ color:#374151; border-color:#9ca3af; }
+.btn-outline-secondary:hover{ background:#e5e7eb; border-color:#9ca3af; color:#111827; }
+/* Delete */
+.btn-outline-danger{ color:#b91c1c; border-color:#ef4444; }
+.btn-outline-danger:hover{ background:#fee2e2; border-color:#ef4444; color:#b91c1c; }
+/* Export / Primary */
+.btn-outline-success{ color:#065f46; border-color:#10b981; }
+.btn-outline-success:hover{ background:#d1fae5; border-color:#10b981; color:#065f46; }
+
+/* Dark tweaks */
+@media (prefers-color-scheme: dark){
+  .btn-dark{ background:#2563eb; border-color:#2563eb; }
+  .btn-dark:hover{ background:#1d4ed8; border-color:#1d4ed8; box-shadow:0 8px 22px rgba(37,99,235,.35); }
+
+  .btn-outline-secondary{ color:#D8E2EE; border-color:#7187A4; }
+  .btn-outline-secondary:hover{ background:#2B3A52; border-color:#8FA5C1; color:#fff; }
+
+  .btn-outline-danger{ color:#FFC1C1; border-color:#FF7A7A; }
+  .btn-outline-danger:hover{ background:#EF4444; border-color:#EF4444; color:#fff; }
+
+  .btn-outline-success{ color:#B7F3CF; border-color:#39D98A; }
+  .btn-outline-success:hover{ background:#16A34A; border-color:#16A34A; color:#fff; }
+}
+
+/* =========================================================
+   Tables
+   ========================================================= */
+.table{
+  --bs-table-color:var(--text);
+  --bs-table-bg:transparent;
+  --bs-table-border-color:var(--border);
+}
+.table>:not(caption)>*>*{ padding-top:.9rem; padding-bottom:.9rem; }
+.table thead th{
+  color:var(--text-muted);
+  font-weight:600;
+  background:transparent;
+}
+.table-hover tbody tr:hover{ background-color:rgba(0,0,0,.03); }
+
+/* Dark table contrast */
+@media (prefers-color-scheme: dark){
+  .table{
+    --bs-table-color:#E7ECF3;
+    --bs-table-border-color:#2f3d52;
+  }
+  .table thead th{
+    color:#D3DBE6 !important;
+    background:#101826 !important;  /* slightly brighter than card */
+  }
+  .table tbody td{ color:#E7ECF3; }
+  .table-hover tbody tr:hover{ background:#132033; }
+}
+
+/* =========================================================
+   Badges
+   ========================================================= */
+.badge{
+  font-weight:600;
+  letter-spacing:.2px;
+  padding:.5rem .75rem;
+  background:#eef2f7;
+  color:#1f2937;
+}
+@media (prefers-color-scheme: dark){
+  .badge{ background:#2A3649; color:#ECF2F8; }
+}
+/* Optional category helpers if you add classes server-side */
+.badge-food{ background:#dcfce7; color:#166534; }
+.badge-travel{ background:#e0f2fe; color:#075985; }
+.badge-bills{ background:#fff7ed; color:#9a3412; }
+.badge-shopping{ background:#f5f3ff; color:#5b21b6; }
+.badge-other{ background:#e5e7eb; color:#374151; }
+@media (prefers-color-scheme: dark){
+  .badge-food{ background:#14532d; color:#bbf7d0; }
+  .badge-travel{ background:#0b3a5b; color:#bae6fd; }
+  .badge-bills{ background:#3c2414; color:#fed7aa; }
+  .badge-shopping{ background:#2b2161; color:#ddd6fe; }
+  .badge-other{ background:#334155; color:#e5e7eb; }
+}
+
+/* =========================================================
+   Progress (budget usage)
+   ========================================================= */
+.progress{ height:10px; background:#eef2f7; }
+.progress-bar.bg-success{ background-color:#10b981 !important; }
+.progress-bar.bg-danger{ background-color:#ef4444 !important; }
+
+/* =========================================================
+   Responsive polish
+   ========================================================= */
+@media (max-width:575.98px){
+  .card .card-title{ font-size:1.05rem; }
+  .table-responsive{ border-radius:.5rem; }
+}
+/* =========================================================
+   Balance Summary Labels
+   ========================================================= */
+.balance-label {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+/* Dark mode: make them brighter for visibility */
+@media (prefers-color-scheme: dark){
+  .balance-label {
+    color: #cbd5e1;   /* slate-300 */
+  }
+}

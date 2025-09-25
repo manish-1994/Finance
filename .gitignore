@@ -1,0 +1,19 @@
+# Python environment & cache
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Firebase / Secrets
+serviceAccountKey.json
+firebase-debug.log
+*.log
+.env
+
+# Databases
+*.db
+
+# OS-specific
+.DS_Store
+Thumbs.db
