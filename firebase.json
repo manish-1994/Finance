@@ -1,9 +1,10 @@
 {
   "hosting": {
     "public": "public",
-    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
-    "rewrites": [
-      { "source": "**", "run": { "serviceId": "finance-app", "region": "asia-south1" } }
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
     ]
   }
 }
